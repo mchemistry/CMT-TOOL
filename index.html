@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-10">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha3104-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+    <style>
+        .convert > textarea {
+            height: 159px;
+            width: 100%;
+        }
+        .noti {
+            position: fixed;
+            display: none;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container d-flex flex-row" style="height: 80vh">
+        <div class="alert alert-success noti" id="noti" role="alert">
+            <p>
+                COPY  THÀNH CÔNG =))))))))))
+            </p>
+          </div>
+        <div class="convert flex-grow-1" style="width: 100%;">
+            <textarea name="" id="content"  class="form-control mt-2"
+                placeholder="Nhập vào đoạn văn muốn comment" required=""></textarea>
+            <textarea name="" id="text" class="form-control mt-2"
+                placeholder="Nhập vào từ khóa muốn chuyển đổi, xuống dòng cho mỗi từ khóa" required=""></textarea>
+            <textarea name="" id="url" class="form-control mt-2"
+                placeholder="Nhập vào url tương ứng với từ khóa, xuống dòng cho mỗi từ url" required=""></textarea>
+            
+                <button id="convert-btn" type="button" class="btn btn-primary mt-4 mx-auto">Chuyển đổi</button>
+                <button id="copy" type="button" class="ml-4 btn btn-success mt-4 mx-auto">Copy</button>
+                <div class="form-check mt-2">
+                    <input type="checkbox" id="include-style" class="form-check-input" id="exampleCheck1" checked>
+                    <label class="form-check-label" for="exampleCheck1">Chứa cả style</label>
+                  </div>
+            
+        </div>
+        <div class="result flex-grow-1 ml-4" style="height: 100%; width: 100%;">
+            <textarea style="height: 100%;" name="" class="form-control mt-2" id="result"></textarea>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    const cities = [
+        'Lào cai',
+        'Yên Bái',
+        'Điện Biên',
+        'Hòa Bình',
+        'Lai Châu',
+        'Sơn La',
+        'Hà Giang',
+        'Cao Bằng',
+        'Bắc Kạn',
+        'Lạng Sơn',
+        'Tuyên Quang',
+        'Thái Nguyên',
+        'Phú Thọ',
+        'Bắc Giang',
+        'Quảng Ninh',
+        'Bắc Ninh',
+        'Vĩnh Phúc',
+        'Hà Nam',
+        'Hà Nội',
+        'Hải Dương',
+        'Hải Phòng',
+        'Hưng Yên',
+        'Nam Định',
+        'Ninh Bình',
+        'Thái Bình',
+        'Thanh Hóa',
+        'Nghệ An',
+        'Hà Tĩnh',
+        'Quảng Bình',
+        'Quảng Trị',
+        'Thừa Thiên Huế',
+        'Đà Năng',
+        'Ninh Thuận',
+        'Quảng Nam',
+        'Quảng Ngãi',
+        'Bình Định',
+        'Phú Yên',
+        'Khánh Hòa',
+        'Bình Thuận',
+        'Kon Tum',
+        'Gia Lai',
+        'Đắk Lắk',
+        'Đắk Nông',
+        'Lâm Đồng',
+        'Bình Phước',
+        'Bình Dương',
+        'Đồng Nai',
+        'Tây Ninh',
+        'Bà Rịa - Vũng Tàu',
+        'TP. Hồ Chí Minh',
+        'Long An',
+        'TP. Cần Thơ',
+        'Đồng Tháp',
+        'Tiền Giang',
+        'An Giang',
+        'Bến Tre',
+        'Vĩnh Long',
+        'Trà Vinh',
+        'Hậu Giang',
+        'Kiên Giang',
+        'Sóc Trăng',
+        'Bạc Liêu',
+        'Cà Mau']
+
+    let listCities = cities.map(city => `Thành lập công ty tại ${city}`);
+    listCities = listCities.join('\n');
+ 
+    const defaultStyle  = `style="color: black; cursor: text; text-decoration: none"`;
+
+    const style = (text, url, isIncludeStyle) => {
+        return `<a href="${url}" ${isIncludeStyle ? defaultStyle :  ''}>${text}</a>`;
+    }
+
+
+    const convertTextToHtml = (text, arrText, arrUrl, isIncludeStyle) => {
+        for (let index = 0; index < arrText.length; index++) {
+            text = text.replace(arrText[index], style(`${arrText[index]}`, `${arrUrl[index]}`, isIncludeStyle));
+        }
+        return text;
+    }
+
+
+    const convertInputToArray = (text) => {
+        const arrFromText = text.split('\n');
+        arrFromText.map(text => text.trim());
+        return arrFromText;
+    }
+    
+    showToast = () => {
+        $('#noti').show();
+        setTimeout(() => {
+            $('#noti').hide();
+        }, 2000);
+    }
+
+    $(document).ready(() => {
+        $('#copy').on('click', () => {
+            $('#result').val(listCities).select();
+            document.execCommand('copy');
+            showToast();
+        });
+
+
+        $('#convert-btn').on('click', () => {
+            const inputText = convertInputToArray($('#text').val());
+            const inputUrl = convertInputToArray($('#url').val());
+            const text = $('#content').val().trim();
+            const isChecked = $('#include-style').prop('checked');
+            console.log(isChecked); 
+            const result = convertTextToHtml(text, inputText, inputUrl, isChecked);
+            $('#result').val(result).select();
+            document.execCommand('copy');
+            showToast();
+        });
+    });
+</script>
+
+</html>
